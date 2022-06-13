@@ -29,6 +29,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.yellow,
         body: Stack(
           children: [
             PageView.builder(
@@ -50,14 +51,19 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 ),
               ),
             ),
-            Positioned(
+            Align(
+                alignment: Alignment.topRight,
                 child: TextButton(
-              child: const Text("skip"),
-              onPressed: () {
-                _pageController.animateToPage(3,
-                    duration: const Duration(seconds: 1), curve: Curves.ease);
-              },
-            )),
+                  child: const Text(
+                    "Skip",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  onPressed: () {
+                    _pageController.animateToPage(3,
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.ease);
+                  },
+                )),
           ],
         ),
       ),

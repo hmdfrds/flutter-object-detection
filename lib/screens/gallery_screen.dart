@@ -209,6 +209,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                                                   pictures[
                                                                           index]
                                                                       .delete();
+                                                                   
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop();

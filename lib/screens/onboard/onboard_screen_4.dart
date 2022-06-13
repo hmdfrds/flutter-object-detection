@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:object_detection/screens/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardScreen4 extends StatelessWidget {
   const OnboardScreen4({Key? key, required this.cameras}) : super(key: key);
@@ -9,6 +10,7 @@ class OnboardScreen4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.yellow,
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 30,
@@ -31,7 +33,9 @@ class OnboardScreen4 extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('firstTime', true);
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
