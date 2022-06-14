@@ -37,7 +37,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-          physics: const NeverScrollableScrollPhysics(),
           itemCount: pages.length,
           controller: _pageController,
           itemBuilder: ((context, index) {

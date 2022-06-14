@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:object_detection/main.dart';
-import 'package:object_detection/screens/home_screen.dart';
 import 'package:object_detection/screens/main_screen.dart';
 import 'package:object_detection/screens/onboard_screen.dart';
 import 'package:page_transition/page_transition.dart';
@@ -40,7 +41,9 @@ class _SplashScreenState extends State<SplashScreen>
       body: AnimatedSplashScreen(
         splashIconSize: 250,
         duration: 2500,
-        splash: Image.asset("assets/Logo PSM.png"),
+        splash: Hero(
+          tag: "assets/Logo PSM.png",
+          child: Image.asset("assets/Logo PSM.png")),
         // Lottie.asset('assets/blinking.json',
         //     width: 250, height: 250, fit: BoxFit.cover),
         nextScreen: nextScreen,
@@ -53,8 +56,10 @@ class _SplashScreenState extends State<SplashScreen>
   setup() async {
     final prefs = await SharedPreferences.getInstance();
     final bool? firstTime = prefs.getBool('firstTime');
+    log(firstTime.toString());
     if (firstTime != null) {
       nextScreen = MainScreen(cameras: cameras!);
+      setState(() {});
     }
   }
 }

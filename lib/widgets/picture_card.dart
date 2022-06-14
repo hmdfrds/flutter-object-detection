@@ -8,7 +8,12 @@ import 'package:object_detection/models/picture.dart';
 
 class PictureCard extends StatefulWidget {
   final Picture picture;
-  const PictureCard({Key? key, required this.picture}) : super(key: key);
+  final GlobalKey spellKey;
+  final GlobalKey objectKey;
+  final GlobalKey slideKey;
+  const PictureCard(this.spellKey, this.objectKey, this.slideKey,
+      {Key? key, required this.picture})
+      : super(key: key);
 
   @override
   State<PictureCard> createState() => _PictureCardState();
@@ -31,6 +36,7 @@ class _PictureCardState extends State<PictureCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: widget.slideKey,
       children: [
         Container(
           height: 175,
@@ -81,6 +87,7 @@ class _PictureCardState extends State<PictureCard> {
                   children: [
                     Flexible(
                       child: ElevatedButton(
+                        key: widget.spellKey,
                         onPressed: () async {
                           if (spell == "") {
                             for (int i = 0;
@@ -109,8 +116,9 @@ class _PictureCardState extends State<PictureCard> {
                     ),
                     Flexible(
                       child: ElevatedButton(
+                        key: widget.objectKey,
                         onPressed: () {
-                          if (widget.picture.confidence * 100 > 75) {
+                          if (widget.picture.confidence * 100 > 65) {
                             flutterTts.speak(confirmSentences[
                                     Random().nextInt(confirmSentences.length)] +
                                 widget.picture.name);

@@ -13,10 +13,12 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: Image.asset(
-                "assets/background.png",
-                fit: BoxFit.cover,
-              ),
+              child: Hero(
+                  tag: "assets/Logo PSM.png",
+                  child: Image.asset(
+                    "assets/background.png",
+                    fit: BoxFit.cover,
+                  )),
             ),
             SizedBox(
               width: double.infinity,

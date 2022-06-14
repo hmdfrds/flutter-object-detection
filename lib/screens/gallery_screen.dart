@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:hive_flutter/adapters.dart';
+import 'package:lottie/lottie.dart';
 import 'package:object_detection/boxes.dart';
 import 'package:object_detection/models/picture.dart';
 import 'package:object_detection/widgets/picture_card.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class GalleryScreen extends StatefulWidget {
   final PageController _pageController;
@@ -15,12 +18,18 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  late TutorialCoachMark tutorialCoachMark;
+  List<TargetFocus> targets = <TargetFocus>[];
+  GlobalKey spellKey = GlobalKey();
+  GlobalKey objectKey = GlobalKey();
+  GlobalKey slideKey = GlobalKey();
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    //setup();
+
+    setup();
   }
 
   @override
@@ -29,10 +38,15 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   setup() async {
-    await Hive.openBox<Picture>('pictures');
-    setState(() {
-      loading = false;
-    });
+    final prefs = await SharedPreferences.getInstance();
+    final bool? doneTutorial = prefs.getBool('doneTutorial');
+    if (doneTutorial == null || doneTutorial != true) {
+      Future.delayed(const Duration(seconds: 1), showTutorial);
+    }
+    // await Hive.openBox<Picture>('pictures');
+    // setState(() {
+    //   loading = false;
+    // });
   }
 
   @override
@@ -209,7 +223,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                                                   pictures[
                                                                           index]
                                                                       .delete();
-                                                                   
+
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop();
@@ -231,6 +245,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                   ],
                                 ),
                                 child: PictureCard(
+                                  spellKey,
+                                  objectKey,
+                                  slideKey,
                                   picture: pictures[index],
                                 ));
                           },
@@ -241,6 +258,124 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     ),
                   );
                 }),
+      ),
+    );
+  }
+
+  void showTutorial() {
+    initTargets();
+    tutorialCoachMark = TutorialCoachMark(
+      context,
+      targets: targets,
+      colorShadow: Colors.red,
+      textSkip: "SKIP",
+      paddingFocus: 10,
+      opacityShadow: 0.8,
+      onFinish: () async {
+        print("finish");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('doneTutorial', true);
+      },
+      onClickTarget: (target) {
+        print('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) async {},
+      onClickOverlay: (target) async {
+        print('onClickOverlay: $target');
+      },
+      onSkip: () async {
+        print("skip");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('doneTutorial', true);
+      },
+    )..show();
+  }
+
+  void initTargets() {
+    targets.clear();
+    targets.add(
+      TargetFocus(
+        shape: ShapeLightFocus.Circle,
+        identify: "objectKey",
+        keyTarget: objectKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const <Widget>[
+                  Text(
+                    "This button is the same as before.It will make a voice speak up the object name from the image",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+
+    targets.add(
+      TargetFocus(
+        shape: ShapeLightFocus.Circle,
+        identify: "spellKey",
+        keyTarget: spellKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const <Widget>[
+                  Text(
+                    "This button also work the same as the spell key before",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+
+    targets.add(
+      TargetFocus(
+        shape: ShapeLightFocus.RRect,
+        identify: "slideKey",
+        keyTarget: slideKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Lottie.asset("assets/82008-swipe-left.json",
+                      height: 200, width: 200),
+                  const Text(
+                    "You can slide this card to delete.",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
