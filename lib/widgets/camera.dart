@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
-import 'dart:math' as math;
 
 typedef Callback = void Function(List<dynamic> list, int h, int w);
 
@@ -77,14 +76,6 @@ class _CameraState extends State<Camera> {
       return Container();
     }
 
-    Size? tmp = MediaQuery.of(context).size;
-    var screenH = math.max(tmp.height, tmp.width);
-    var screenW = math.min(tmp.height, tmp.width);
-    tmp = controller!.value.previewSize;
-    var previewH = math.max(tmp!.height, tmp.width);
-    var previewW = math.min(tmp.height, tmp.width);
-    var screenRatio = screenH / screenW;
-    var previewRatio = previewH / previewW;
 
     return
         // OverflowBox(
