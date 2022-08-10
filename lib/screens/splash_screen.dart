@@ -40,12 +40,10 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: AnimatedSplashScreen(
         splashIconSize: 250,
-        duration: 2500,
+        duration: 3000,
         splash: Hero(
-          tag: "assets/Logo PSM.png",
-          child: Image.asset("assets/Logo PSM.png")),
-        // Lottie.asset('assets/blinking.json',
-        //     width: 250, height: 250, fit: BoxFit.cover),
+            tag: "assets/Logo PSM.png",
+            child: Image.asset("assets/Logo PSM.png")),
         nextScreen: nextScreen,
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
@@ -58,8 +56,10 @@ class _SplashScreenState extends State<SplashScreen>
     final bool? firstTime = prefs.getBool('firstTime');
     log(firstTime.toString());
     if (firstTime != null) {
-      nextScreen = MainScreen(cameras: cameras!);
-      setState(() {});
+      setState(() {
+        nextScreen = MainScreen(cameras: cameras!);
+        log("message");
+      });
     }
   }
 }

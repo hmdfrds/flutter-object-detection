@@ -11,6 +11,7 @@ import 'package:object_detection/boxes.dart';
 import 'package:object_detection/models/picture.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tflite/tflite.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../widgets/camera.dart';
@@ -78,6 +79,15 @@ class _CameraScreenState extends State<CameraScreen> {
   ];
 
   loadModel() async {
+    try {
+      await Tflite.loadModel(
+        model: "assets/mobilenet_v1.tflite",
+        labels: "assets/mobilenet_v1.txt",
+      );
+    } catch (e) {
+      print('error loading model');
+      print(e);
+    }
   }
 
   setRecognitions(List<dynamic> recognitions, imageHeight, imageWidth) {
@@ -390,7 +400,6 @@ class _CameraScreenState extends State<CameraScreen> {
                     Random().nextInt(unConfirmSentences.length)] +
                 object);
           }
-          
         } else if (target.keyTarget == spellButton) {
           currentObject = object;
           for (int i = 0; i < currentObject.length; i++) {

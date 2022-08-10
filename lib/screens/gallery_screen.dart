@@ -23,7 +23,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
   GlobalKey spellKey = GlobalKey();
   GlobalKey objectKey = GlobalKey();
   GlobalKey slideKey = GlobalKey();
-  bool loading = false;
+  bool? doneTutorial;
+  bool loading = true;
 
   @override
   void initState() {
@@ -39,14 +40,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   setup() async {
     final prefs = await SharedPreferences.getInstance();
-    final bool? doneTutorial = prefs.getBool('doneTutorial');
+    doneTutorial = prefs.getBool('doneTutorial');
     if (doneTutorial == null || doneTutorial != true) {
       Future.delayed(const Duration(seconds: 1), showTutorial);
     }
     // await Hive.openBox<Picture>('pictures');
-    // setState(() {
-    //   loading = false;
-    // });
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -178,78 +179,81 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       )
                     ],
                     body: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 40),
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 40),
                       child: ListView.separated(
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
                             return Slidable(
-                                key: ValueKey(index),
-                                endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      // An action can be bigger than the others.
-                                      flex: 2,
-                                      onPressed: (context) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: const Text(
-                                                    "Confirm Delete"),
-                                                content: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const Text(
-                                                          "Are you sure you want to delete this?"),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          TextButton(
-                                                              onPressed: () {
+                              key: ValueKey(index),
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    // An action can be bigger than the others.
+                                    flex: 2,
+                                    onPressed: (context) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title:
+                                                  const Text("Confirm Delete"),
+                                              content: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const Text(
+                                                        "Are you sure you want to delete this?"),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            child: const Text(
+                                                                "Cancel")),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                pictures[index]
+                                                                    .delete();
+
                                                                 Navigator.of(
                                                                         context)
                                                                     .pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel")),
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  pictures[
-                                                                          index]
-                                                                      .delete();
-
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                });
-                                                              },
-                                                              child: const Text(
-                                                                  "Delete"))
-                                                        ],
-                                                      )
-                                                    ]),
-                                              );
-                                            });
-                                      },
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Colors.white,
-                                      icon: CupertinoIcons.delete,
-                                      label: 'Delete',
+                                                              });
+                                                            },
+                                                            child: const Text(
+                                                                "Delete"))
+                                                      ],
+                                                    )
+                                                  ]),
+                                            );
+                                          });
+                                    },
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: CupertinoIcons.delete,
+                                    label: 'Delete',
+                                  ),
+                                ],
+                              ),
+                              child: doneTutorial == null
+                                  ? PictureCard(
+                                      spellKey: spellKey,
+                                      objectKey: objectKey,
+                                      slideKey: slideKey,
+                                      picture: pictures[index],
+                                    )
+                                  : PictureCard(
+                                      picture: pictures[index],
                                     ),
-                                  ],
-                                ),
-                                child: PictureCard(
-                                  spellKey,
-                                  objectKey,
-                                  slideKey,
-                                  picture: pictures[index],
-                                ));
+                            );
                           },
                           separatorBuilder: (context, index) {
                             return const SizedBox(height: 40);
@@ -275,6 +279,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         print("finish");
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('doneTutorial', true);
+        setState(() {});
       },
       onClickTarget: (target) {
         print('onClickTarget: $target');

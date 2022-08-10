@@ -8,12 +8,16 @@ import 'package:object_detection/models/picture.dart';
 
 class PictureCard extends StatefulWidget {
   final Picture picture;
-  final GlobalKey spellKey;
-  final GlobalKey objectKey;
-  final GlobalKey slideKey;
-  const PictureCard(this.spellKey, this.objectKey, this.slideKey,
-      {Key? key, required this.picture})
-      : super(key: key);
+  final Key? spellKey;
+  final Key? objectKey;
+  final Key? slideKey;
+  const PictureCard({
+    Key? key,
+    required this.picture,
+    this.spellKey,
+    this.objectKey,
+    this.slideKey,
+  }) : super(key: key);
 
   @override
   State<PictureCard> createState() => _PictureCardState();
