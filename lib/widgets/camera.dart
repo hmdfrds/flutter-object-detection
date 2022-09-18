@@ -39,7 +39,6 @@ class _CameraState extends State<Camera> {
           return;
         }
         setState(() {});
-
         controller!.startImageStream((CameraImage img) {
           if (!isDetecting) {
             isDetecting = true;
@@ -53,9 +52,7 @@ class _CameraState extends State<Camera> {
               numResults: 1,
             ).then((recognitions) {
               //print("Detection took ${endTime - startTime}");
-
               widget.setRecognitions(recognitions!, img.height, img.width);
-
               isDetecting = false;
             });
           }
@@ -75,7 +72,6 @@ class _CameraState extends State<Camera> {
     if (controller == null || !controller!.value.isInitialized) {
       return Container();
     }
-
 
     return
         // OverflowBox(

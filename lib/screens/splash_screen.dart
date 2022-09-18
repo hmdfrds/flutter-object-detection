@@ -54,8 +54,9 @@ class _SplashScreenState extends State<SplashScreen>
   setup() async {
     final prefs = await SharedPreferences.getInstance();
     final bool? firstTime = prefs.getBool('firstTime');
+
     log(firstTime.toString());
-    if (firstTime != null) {
+    if (firstTime != null && !firstTime) {
       setState(() {
         nextScreen = MainScreen(cameras: cameras!);
         log("message");

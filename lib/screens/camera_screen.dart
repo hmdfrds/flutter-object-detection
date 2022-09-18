@@ -65,8 +65,9 @@ class _CameraScreenState extends State<CameraScreen> {
       });
     }
     final prefs = await SharedPreferences.getInstance();
-    final bool? doneTutorial = prefs.getBool('doneTutorial');
-    if (doneTutorial == null || doneTutorial != true) {
+    final bool? notDoneTutorial = prefs.getBool('notDoneTutorial');
+
+    if (notDoneTutorial == null || notDoneTutorial == true) {
       Future.delayed(const Duration(seconds: 1), showTutorial);
     }
   }
@@ -81,12 +82,11 @@ class _CameraScreenState extends State<CameraScreen> {
   loadModel() async {
     try {
       await Tflite.loadModel(
-        model: "assets/mobilenet_v1.tflite",
-        labels: "assets/mobilenet_v1.txt",
+        model: "assets/modelshen.tflite",
+        labels: "assets/labelshen.txt",
       );
     } catch (e) {
-      print('error loading model');
-      print(e);
+      print("object");
     }
   }
 
@@ -292,10 +292,6 @@ class _CameraScreenState extends State<CameraScreen> {
                                     shape: BoxShape.circle, color: Colors.pink),
                                 child: IconButton(
                                   onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text((confidence * 100)
-                                                .toString())));
                                     if (confidence * 100 > 65) {
                                       flutterTts.speak(confirmSentences[Random()
                                               .nextInt(
@@ -333,14 +329,11 @@ class _CameraScreenState extends State<CameraScreen> {
                                     NativeScreenshot.takeScreenshot()
                                         .then((value) async {
                                       EasyLoading.show();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                              SnackBar(content: Text(value!)));
 
                                       final picture = Picture()
                                         ..confidence = c
                                         ..name = o
-                                        ..path = value;
+                                        ..path = value!;
 
                                       final box = Boxes.getPictures();
                                       box.add(picture);
@@ -383,12 +376,8 @@ class _CameraScreenState extends State<CameraScreen> {
       textSkip: "SKIP",
       paddingFocus: 10,
       opacityShadow: 0.8,
-      onFinish: () {
-        print("finish");
-      },
-      onClickTarget: (target) {
-        print('onClickTarget: $target');
-      },
+      onFinish: () {},
+      onClickTarget: (target) {},
       onClickTargetWithTapPosition: (target, tapDetails) async {
         if (target.keyTarget == objectButton) {
           if (confidence * 100 > 65) {
@@ -424,13 +413,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
             NativeScreenshot.takeScreenshot().then((value) async {
               EasyLoading.show();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(value!)));
 
               final picture = Picture()
                 ..confidence = c
                 ..name = o
-                ..path = value;
+                ..path = value!;
 
               final box = Boxes.getPictures();
               box.add(picture);
@@ -479,13 +466,10 @@ class _CameraScreenState extends State<CameraScreen> {
               curve: Curves.ease);
         } else {}
       },
-      onClickOverlay: (target) {
-        print('onClickOverlay: $target');
-      },
+      onClickOverlay: (target) {},
       onSkip: () async {
-        print("skip");
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('doneTutorial', true);
+        await prefs.setBool('notDoneTutorial', false);
       },
     )..show();
   }

@@ -23,7 +23,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   GlobalKey spellKey = GlobalKey();
   GlobalKey objectKey = GlobalKey();
   GlobalKey slideKey = GlobalKey();
-  bool? doneTutorial;
+  bool? notDoneTutorial;
   bool loading = true;
 
   @override
@@ -40,8 +40,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   setup() async {
     final prefs = await SharedPreferences.getInstance();
-    doneTutorial = prefs.getBool('doneTutorial');
-    if (doneTutorial == null || doneTutorial != true) {
+    notDoneTutorial = prefs.getBool('notDoneTutorial');
+    if (notDoneTutorial == null || notDoneTutorial == true) {
       Future.delayed(const Duration(seconds: 1), showTutorial);
     }
     // await Hive.openBox<Picture>('pictures');
@@ -243,7 +243,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                   ),
                                 ],
                               ),
-                              child: doneTutorial == null
+                              child: notDoneTutorial == null
                                   ? PictureCard(
                                       spellKey: spellKey,
                                       objectKey: objectKey,
@@ -276,22 +276,18 @@ class _GalleryScreenState extends State<GalleryScreen> {
       paddingFocus: 10,
       opacityShadow: 0.8,
       onFinish: () async {
-        print("finish");
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('doneTutorial', true);
+        await prefs.setBool('notDoneTutorial', false);
         setState(() {});
       },
       onClickTarget: (target) {
-        print('onClickTarget: $target');
       },
       onClickTargetWithTapPosition: (target, tapDetails) async {},
       onClickOverlay: (target) async {
-        print('onClickOverlay: $target');
       },
       onSkip: () async {
-        print("skip");
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('doneTutorial', true);
+        await prefs.setBool('notDoneTutorial', false);
       },
     )..show();
   }

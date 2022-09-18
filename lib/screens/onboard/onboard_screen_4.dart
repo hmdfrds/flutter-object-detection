@@ -35,7 +35,7 @@ class OnboardScreen4 extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('firstTime', true);
+                  await prefs.setBool('firstTime', false);
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
