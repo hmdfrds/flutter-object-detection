@@ -57,7 +57,7 @@ Flutter Object Detection is a mobile application built using Flutter that detect
 
 ## Demonstration Video
 
-![Youtube](https://www.youtube.com/watch?v=ConPI_hJPkA)
+[![Youtube](https://www.youtube.com/watch?v=ConPI_hJPkA/0.jpg)](https://www.youtube.com/watch?v=ConPI_hJPkA)
 
 ## License
 
